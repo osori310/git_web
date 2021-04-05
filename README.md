@@ -69,4 +69,20 @@
 
 ---
 
+* webShop 폴더 -> WEB-INF 폴더 -> classes, lib 폴더 + web.xml 파일
+
+    1. webShop 폴더를 tomcat9의 하위폴더 webapps에 복사 & 붙여넣기
+
+
+    2. VScode 를 통해 main.html(웹애플리케이션)을 tomcat9의 하위폴더 webapps -> webShop 최상단에 생성
+
+
+    3. tomcat9의 bin 폴더로 진입하여 startup 실행
+
+
+    4. 톰캣 컨테이너가 실행되며 이후 브라우저에서 웹 애플리케이션 요청
+
+        -> http://localhost:포트번호(8080)/컨텍스트이름/요청파일이름
+        -> http://localhost:8080/webShop/main.html
+
 
