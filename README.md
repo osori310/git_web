@@ -2,7 +2,7 @@
 
 ## 1. 웹 애플리케이션 이해하기
 
-* 실습 1)
+* **실습 1)**
 
 
 **webShop 실습**
@@ -134,4 +134,147 @@ cf) 실제 개발 과정에서는 수시로 애플리케이션을 실행하고 �
 
 
 - server.xml의 위치 : tomcat9 -> conf
+
+
+
+- server.xml에 컨텍스트를 등록하려면 다음과 같이 <Context> 태그 이용
+
+  ```xml
+  <Context path = "/context name"
+           docBase = "실제 웹 애플리케이션의 WEB-INF 디렉터리 위치"
+           reloadable = "true or false" />
+  ```
+
+  1. path : 웹 애플리케이션의 컨텍스트 이름으로 웹 애플리케이션의 이름과 다를 수 있으며 웹 브라우저에서 실제 웹 애플리케이션을 요청하는 이름
+
+  2. docBase : 컨텍스트에 대한 실제 웹 애플리케이션이 위치한 경로. 
+
+     >  WEB-INF 상위 폴더까지의 경로
+
+  3. reloadable : 실행 중 소스 코드가 수정될 경우 바로 갱신할 지 설정
+
+     > 만약 false로 설정하면 톰캣을 다시 실행해야 추가한 소스 코드의 기능이 반영됨
+
+  
+
+  ex)
+
+  ```xml
+  <Context path = "/webMal"
+           docBase = "C:\Users\power\git_web\webShop"
+           reloadable = "true" />
+  ```
+
+
+
+	- 일반적으로 컨텍스트 이름은 웹 애플리케이션 이름과 동일하게 함
+	- 하지만 이번 실습에서는 다르게 등록
+	- 실제 웹 애플리케이션은 "C:\Users\power\git_web\webShop"에 있지만 webShop이 아닌 webMal이라는 이름으로 컨텍스트 등록
+
+
+
+-> VScode를 통해 server.xml 파일을 열어 
+
+```xml
+ <Host name="localhost"  appBase="webapps"
+            unpackWARs="true" autoDeploy="true">
+
+	<!-- 이 부분 추가 -->
+     <Context path = "/webMal"
+         docBase = "C:\Users\power\git_web\webShop"
+         reloadable = "true" />
+	<!-- 이 부분 추가 -->
+```
+
+
+
+이후 tomcat9을 재실행 한 후 브라우저에 다음과 같이 입력
+
+```
+http://localhost:8080/webMal/main.html
+```
+
+cf) `webShop` 에서 `webMal`로 변경 
+
+
+
+* 본 실습에서 톰캣 컨테이너에서의 웹 애플리케이션 동작 과정
+  1. 웹 웹 브라우저에서 컨텍스트 이름(webMal)으로 요청
+  2. 요청을 받은 톰캣 컨테이너는 요청한 컨텍스트 이름이 server.xml에 있는지 확인
+  3. 해당 컨텍스트 이름이 있으면 컨텍스트 이름에 대한 실제 웹 애플리케이션이 있는 경로(C:\Users\power\git_web\webShop)로 가서 요청한 main.html을 클라이언트 웹 브라우저로 전송
+  4. 웹 브라우저는 전송된 main.html을 브라우저에 나타냄
+
+
+
+* **실습2)**
+
+지금까지 웹 애플리케이션이 실행되는 과정을 쉽게 이해하기 위해 직접 웹 애플리케이션을 만들어 실습해 보았음
+
+이제 이클립스(개발 도구)를 이용하여 웹 애플리케이션을 만들고, 톰캣 컨테이너에 등록한 후 실행하는 과정알아보기
+
+
+
+1. 이클립스에서 웹 프로젝트 생성
+
+   * 이클립스에서 한 개의 프로젝트가 한 개의 웹 애플리케이션
+   * 즉, 프로젝트 이름이 웹 애플리케이션 이름
+   * 이클립스 실행 후 Project Explorer 영역에서 마우스 오른쪽 버튼을 클릭한 후 New > Dynamic Web Project 선택
+
+2. 이름 : webShop & next, next 후 web.xml 생성할 것인지 묻는 체크박스에 체크 & Finish
+
+3. Project Explorer에 webShop 프로젝트가 생성된 것을 확인
+
+4. 이클립스에서 HTML 파일 생성
+
+   1. 프로젝트 하위 메뉴에서 WebContent를 선택하고 마우스 오른쪽 버튼 클릭으로 New > HTML File 선택
+
+   2. 이름 : main.html으로 생성
+
+   3. 다음과 같이 간단한 HTML 코드를 작성한 후 저장
+
+      ```html
+      <!DOCTYPE html>
+      <html>
+      <head>
+      <meta charset="UTF-8">
+      <title>Hello JSP</title>
+      </head>
+      <body>
+      Hello JSP!!
+      안녕하세요!!
+      </body>
+      </html>
+      ```
+
+5. 이클립스에서 만든 프로젝트를 톰캣 컨테이너에 등록한 후 실행
+
+   1. 이클립스 하단의 Servers 탭을 선택하고 마우스 오른쪽 버튼을 클릭한 후 New > Server를 선택
+   2. Apache 항목에서 Tomcat v9.0 Server를 선택한 후 Next
+   3. 톰캣 설치 디렉터리 선택
+
+6. 이클립스와 연동한 톰캣에 프로젝트 등록
+
+   -> 앞에서 server.xml에 직접 등록했었지만 eclipse에서 더 간단하게 설정할 수 있음
+
+   1. Servers 탭 아래에 등록된 톰캣 서버 Tomcat v9.0 Server at localhost [Stopped]를 선택한 후 마우스 오른쪽 버튼을 클릭하여 Add and Remove를 선택
+   2. Available에서 실습에서 만든 프로젝트명(webShop)를 선택한 후 Add> 클릭
+   3. Finish
+
+7. Servers > server.xml에 다음과 같이 추가된 내용을 확인
+
+   ```xml
+   <Context docBase="webShop" path="/webShop" reloadable="true" source="org.eclipse.jst.jee.server:webShop"/></Host>
+   ```
+
+8. 웹 브라우저에서 요청하기
+
+   1. Servers 탭 오른쪽에 있는 녹색 실행버튼을 클릭해 서버 실행
+
+   2. 브라우저에서 다음 주소로 요청
+
+      ```
+      http://localhost:8080/webShop/main.html
+      ```
+
+   
 
